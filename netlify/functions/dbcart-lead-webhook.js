@@ -24,12 +24,22 @@ exports.handler = async function (event) {
       }
     }
 
-    // 받은 항목을 그대로 나열해서 메시지 구성
-    const lines = Object.entries(params)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join("\n");
+    // 날짜(2026.08.05) + 시간(17:22, 24시간제)를 "2026. 8. 5 pm 5:22" 형태로 변환
+    function formatDateTime(dateStr, timeStr) {
+      if (!dateStr || !timeStr) return `${dateStr || ""} ${timeStr || ""}`.trim();
+      const [year, month, day] = dateStr.split(".").map((v) => parseInt(v, 10));
+      const [hour24, minute] = timeStr.split(":");
+      const h = parseInt(hour24, 10);
+      const ampm = h < 12 ? "am" : "pm";
+      const hour12 = h % 12 === 0 ? 12 : h % 12;
+      return `${year}. ${month}. ${day} ${ampm} ${hour12}:${minute}`;
+    }
 
-    const message = `📩 새 디비 접수 (신협 비상금대출)\n\n${lines || "(전달된 데이터 없음)"}`;
+    const message =
+      `📩 새 디비 접수 (신협 비상금대출)\n\n` +
+      `이름: ${params.name || "-"}\n` +
+      `연락처: ${params.phone || "-"}\n` +
+      `신청시각: ${formatDateTime(params.date, params.time)}`;
 
     await fetch(
       `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
