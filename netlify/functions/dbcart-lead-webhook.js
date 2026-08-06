@@ -4,6 +4,17 @@
 
 const TELEGRAM_BOT_TOKEN = "8333507455:AAF_3KRAB2GEjaQanaxKznvSl_GC3zDl4sk";
 const TELEGRAM_CHAT_ID = "-5545309365";
+const SHEET_WEBAPP_URL =
+  "https://script.google.com/macros/s/AKfycbxj0STjXslNEZbdCRdsEirkTCg_O8bvkcmwdCCqfjL3yTu4n_mv6dDDSrDqK55Vl6xp/exec";
+
+// 리퍼러 문자열로 fb/ig 판별
+function detectSource(referer) {
+  if (!referer) return "-";
+  const r = referer.toLowerCase();
+  if (r.includes("instagram")) return "ig";
+  if (r.includes("facebook") || r.includes("fb.com") || r.includes("l.php")) return "fb";
+  return referer;
+}
 
 exports.handler = async function (event) {
   try {
@@ -52,6 +63,19 @@ exports.handler = async function (event) {
         }),
       }
     );
+
+    // 구글시트에도 기록
+    await fetch(SHEET_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: params.name || "",
+        phone: params.phone || "",
+        source: detectSource(params.referer),
+        campaign: "랜딩페이지_신협",
+        time: formatDateTime(params.date, params.time),
+      }),
+    });
 
     return {
       statusCode: 200,
