@@ -58,8 +58,8 @@ exports.handler = async function (event) {
       }
     );
 
-    if (isNewLanding) {
-      // 새 랜딩페이지 → 디비통합 시트(체험단 탭)로 기록
+if (isNewLanding) {
+      // 새 랜딩페이지 → 디비통합 시트로 기록 (campaign 값으로 탭 구분)
       await fetch(SHEET_WEBAPP_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,7 +70,7 @@ exports.handler = async function (event) {
           category: params.category || "",
           time: formatDateTime(params.date, params.time),
           source: detectSource(params.referer),
-          campaign: "체험단",
+          campaign: params.campaign || "체험단",
         }),
       });
     } else {
