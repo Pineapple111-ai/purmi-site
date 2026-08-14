@@ -43,7 +43,6 @@ exports.handler = async function (event) {
       `📩 새 디비 접수 (랜딩페이지 캠페인)\n\n` +
       `이름: ${params.name || "-"}\n` +
       `연락처: ${params.phone || "-"}\n` +
-      `카테고리: ${params.category || "-"}\n` +
       `유입경로: ${detectSource(params.referer)}\n` +
       `신청시각: ${formatDateTime(params.date, params.time)}`;
 
