@@ -37,7 +37,7 @@ exports.handler = async function (event) {
       return `${year}. ${month}. ${day} ${ampm} ${hour12}:${minute}`;
     }
 
-    const isNewLanding = !!params.category; // 새 랜딩페이지는 카테고리 값을 보냄
+    const isNewLanding = params.sheetName === "디비통합";
 
     const message =
       `📩 새 디비 접수 (랜딩페이지 캠페인)\n\n` +
